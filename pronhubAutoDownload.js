@@ -382,12 +382,12 @@
             if (canOperate) {
                 jumpToDetails();
             } else {
-                GM_log("start but no execute " + expr);
+                GM_log("start but no execute jumpToDetails()");
             }
         }
 
         function startDownloadVideo() {
-            GM_log("startDownladVideo:");
+            GM_log("start downlad video...");
             start();
             downloadVideo();
         }
