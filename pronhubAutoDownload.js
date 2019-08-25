@@ -2,7 +2,7 @@
 // @name         pronhub auto download
 // @namespace    http://tampermonkey.net/
 // @downloadUrl  https://raw.githubusercontent.com/codersluy/tampermonkey-script/master/pronhubAautoDownload.js
-// @version      0.4
+// @version      0.5
 // @description  pronhub auto download...
 // @author       Luy
 // @match        https://cn.pornhub.com/view_video.php*
@@ -21,13 +21,13 @@
 
     var Config = (function ($) {
         $.filter = {
-            watched: false,
-            hd: true,
-            tinyVideoEvaluate: 85,
-            smallVideoEvaluate: 85,
-            bigVideoEvaluate: 90,
-            exist: false,
-            vr: false
+            watched: false, //true看过的也下载,false看过的不下载
+            hd: true, //true HD视频下载,false 所有清晰度都下载
+            tinyVideoEvaluate: 60,
+            smallVideoEvaluate: 80,
+            bigVideoEvaluate: 85,
+            exist: false, //true 下载过的也下载,false 下载过的不下载
+            vr: false //true VR视频下载,false VR视频不下载
         };
         return $;
     })(window.Config || {});
@@ -268,14 +268,31 @@
             let exist = existKey($li.attr("_vkey"));
             GM_log("EXIST:" + exist + ";  " + "WATCHED:" + watched + ";  " + "HD:" + hd + ";  " + "VR:" + vr + ";  " + "DURATION(S):" + duration + ";   " + "EVALUATE:" + evaluate + "%;");
 
-            if (!(exist == Config.filter.exist && watched == Config.filter.watched && vr == Config.filter.watched)) {
+            if(exist != Config.filter.exist){
+                return;
+            }
+
+            if(watched != Config.filter.watched){
+                return;
+            }
+
+            if(vr != Config.filter.vr){
+                return;
+            }
+
+            if(hd != Config.filter.hd){
+                return;
+            }
+
+            if(duration <= 1200 && evaluate < Config.filter.tinyVideoEvaluate){ //小于20分钟
                 return false;
             }
-            // if (!(hd && duration <= 1800 && evaluate >= 70 || duration <= 1800 && evaluate >= 85 || evaluate >= 90)) {
-            //     return false;
-            // }
 
-            if (!(hd == Config.filter.hd && duration <= 1800 && evaluate >= Config.filter.tinyVideoEvaluate)) {
+            if(duration <= 1800 && evaluate < Config.filter.smallVideoEvaluate){ //小于30分钟
+                return false;
+            }
+
+            if(duration > 1800 && evaluate < Config.filter.bigVideoEvaluate){ //大于30分钟
                 return false;
             }
 
