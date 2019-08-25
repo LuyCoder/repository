@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         pronhub auto download
 // @namespace    http://tampermonkey.net/
-// @downloadUrl  https://raw.githubusercontent.com/codersluy/tampermonkey-script/master/pronhubAautoDownload.js
+// @downloadUrl  https://raw.githubusercontent.com/codersluy/tampermonkey-script/master/pronhubAutoDownload.js
 // @version      0.5
 // @description  pronhub auto download...
 // @author       Luy
