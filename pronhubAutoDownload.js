@@ -158,13 +158,14 @@
             let _url = downloadUrl.substr(0, downloadUrl.indexOf("?"));
             let videoName = _url.substr(_url.lastIndexOf("/") + 1);
             let videoKey = getQueryVariable("viewkey");
-
+			//existName(videoName)
+			
             if (existName(videoName)) { //已存在
                 addKey(videoKey);
                 GM_log("exist name,shut down in five seconds...");
                 window.setTimeout(function () {
                     window.close();
-                }, 5000)
+                }, 10000)
             } else {
                 addName(videoName);
                 addKey(videoKey);
@@ -174,6 +175,9 @@
                     $downloadLinkElement[0].click();
                     GM_log("download success...");
                 }, 5000);
+				window.setTimeout(function () {
+                    window.close();
+                }, 10000)
             }
         }
 
@@ -181,13 +185,18 @@
 
         function initLiArray() {
             let pathname = window.location.pathname;
+			GM_log("pathname...");
             if (pathname.indexOf("/playlist/") == 0) { //播单
+				GM_log("playlist...");
                 liArray = $(".container.playlistSectionWrapper").find(".js-pop.videoblock");
-            } else if (pathname.indexOf("/video") == 0) { //分类
-                liArray = $("#videoCategory").find(".js-pop.videoblock");
             } else if (pathname.indexOf("/video/search") == 0) { //搜索
+				GM_log("search...");
                 liArray = $("#videoSearchResult").find(".js-pop.videoblock");
+            } else if (pathname.indexOf("/video") == 0) { //分类
+				GM_log("category...");
+                liArray = $("#videoCategory").find(".js-pop.videoblock");
             } else { //频道
+				GM_log("channel...");
                 liArray = $(".rightSide.floatRight").find("div.widgetContainer>ul>li");
             }
         }
@@ -272,7 +281,10 @@
 
             // 已下载过
             let exist = existKey($li.attr("_vkey"));
-            GM_log("EXIST:" + exist + ";  " + "WATCHED:" + watched + ";  " + "HD:" + hd + ";  " + "VR:" + vr + ";  " + "DURATION(S):" + duration + ";   " + "EVALUATE:" + evaluate + "%;");
+			
+			let name = $li.find(".title>a").attr("title").toLowerCase()
+			
+            GM_log("NAME:" + name + ";  " + "EXIST:" + exist + ";  " + "WATCHED:" + watched + ";  " + "HD:" + hd + ";  " + "VR:" + vr + ";  " + "DURATION(S):" + duration + ";   " + "EVALUATE:" + evaluate + "%;");
 
             if (exist != Config.filter.exist) {
                 return;
@@ -289,6 +301,10 @@
             if (hd != Config.filter.hd) {
                 return;
             }
+			
+			if (name.indexOf("mila azul") == -1) {
+                //return;
+            }
 
             if (duration <= 1200 && evaluate < Config.filter.tinyVideoEvaluate) { //小于20分钟
                 return false;
@@ -304,7 +320,7 @@
 
             let second = null;
             if (hd) {
-                second = Math.ceil(duration * 0.025);
+                second = Math.ceil(duration * 0.020);
             } else {
                 second = Math.ceil(duration * 0.015);
             }
@@ -313,7 +329,7 @@
         }
 
 
-        const intervalTime = 45000;
+        const intervalTime = 15000;
 
         function nextPage() {
 
